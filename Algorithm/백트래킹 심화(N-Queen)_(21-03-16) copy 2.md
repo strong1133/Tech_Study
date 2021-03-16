@@ -11,6 +11,7 @@ i> # TIL - 2021-03-15
 <img src="https://kyun2da.github.io/img/algorithm/backTracking.png" width = "80%" ></img>
 </div>
   - `답이 될수 없는 후보는 더이상 들어가지 않고 되돌아 가는 방법을 의미한다!`
+
   - 부르트포스 방법보다 훨씬 더 빠르게 탐색 가능
   - 참고 영상: https://youtu.be/Enz2csssTCs
   <br/>
