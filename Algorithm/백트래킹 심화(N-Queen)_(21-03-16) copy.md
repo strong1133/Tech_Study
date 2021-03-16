@@ -35,7 +35,7 @@ i> # TIL - 2021-03-15
 ## 💡 백트래킹 대표문제 _ N-Queen
 <hr/>
 <div style ="text-align:center">
-<img src ="https://kyun2da.github.io/img/algorithm/nQueen.gif" width=80%></img>
+<img src ="https://kyun2da.github.io/img/algorithm/nQueen.gif" width=60%></img>
 </div>
 <br/><br/>
 
@@ -47,3 +47,21 @@ i> # TIL - 2021-03-15
   - 퀸이 같은 대각선에 있을때
 
     `해당 경우들을 피해서 DFS탐색`
+
+<div style ="text-align:center">
+<img src ="https://github.com/strong1133/TIL/blob/main/img/qimg01.png?raw=true" width=89%></img>
+</div>
+
+ - n=4일때 경우의 수는 2이다.
+ - 노드의 깊이가 n과 같아질뗴 성공한것으로 간주할수 있다.
+ - 그렇다면 현재 놓여져 있는 퀸을 담을 변수 arr[]을 만들고 
+ - 아래 줄 4칸에 해당하는 후보자들을 담아줄 candidate를 만들어준다
+ - candidate에서 값을 하나씩 꺼내와 arr[i] 에 해당하는것이 있는지 비교해주고 있으면 후보에서 제외 해준다.
+ - 해당 방법으로 수직, 대각선 방향에 있는 것들을 후보에서 제거해준다. -> `배제`
+ - 위 과정을 거치고도 candidate안에 있다면 그것은 기존의 퀸과 겹치지 않는 다는 뜻
+ - 새롭게 위치한 퀸에서부터 다음단계로 나아가야하니 현재 놓인 퀸의 값인 arr[]에 append
+ - 새로운 arr[]을 사용해서 재귀해주고 
+ - 퀸이 다른 위치에 놓였을 때 경의수를 찾아주기 위해 arr.pop() 수행  -> `백트래킹`
+ - 퀸이 놓일수 있는 위치를 1층 부터 n층 까지 다찾았다면 깊이가 length == n 이된다.
+ - 따라서 length == n 일때 `현재 함수`를 return해주면 된다.
+ 
