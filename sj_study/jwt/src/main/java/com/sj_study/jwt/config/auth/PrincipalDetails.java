@@ -1,26 +1,24 @@
-package com.sj_study.jwt.auth;
+package com.sj_study.jwt.config.auth;
 
-import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
+
 import com.sj_study.jwt.domain.User;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Data
-public class PrincipalDetails implements UserDetails {
-    private User user;
+public class PrincipalDetails implements UserDetails{
+
+	private User user;
 
     public PrincipalDetails(User user){
         this.user = user;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        return authorities;
-    }
+    public User getUser() {
+		return user;
+	}
 
     @Override
     public String getPassword() {
@@ -50,5 +48,12 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    
+	@Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+
+        return authorities;
     }
 }

@@ -1,7 +1,9 @@
 package com.sj_study.jwt.config;
 
 import com.sj_study.jwt.config.jwt.JwtAuthenticationFilter;
+import com.sj_study.jwt.config.jwt.JwtAuthorizationFilter;
 import com.sj_study.jwt.filter.MyFilter1;
+import com.sj_study.jwt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +22,8 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final CorsFilter corsFilter; // CorsConfig에서 만든 Filter를 사용하기 위한 DI
+    private final CorsConfig corsConfig; // CorsConfig에서 만든 Filter를 사용하기 위한 DI
+    private final UserRepository userRepository;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
@@ -30,18 +33,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     // http.addFilterBefore(new MyFilter1(), SecurityContextPersistenceFilter.class);
-        http.csrf().disable(); 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 사용x
-
-                .and()
-                .addFilter(corsFilter) // Cors필터링
-                // @CrossOrigin => 인증이 필요 없는 경우 사용 // 인증이 필요한 경우에는 시큐s리티에 등록 해줘야한다.
-                .formLogin().disable() // 이녀석 때문에 별도의 로그인 시도를 캐치해줄 필터가 필요
+        http
+                .addFilter(corsConfig.corsFilter())
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+                .formLogin().disable()
                 .httpBasic().disable()
+
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                //AuthenticationManager 이녀석은 로그인 매니져라고 생각하면 되며, JwtAuthenticationFilter 이녀석이 로그인 수행 필터이기 때문에
-                // 매니저와 함께 해야 하므로 JwtAuthenticationFilter를 던져주면 된다.
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeRequests()
                 .anyRequest().permitAll();
+
     }
 }

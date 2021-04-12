@@ -18,7 +18,7 @@ public class MyFilter1 implements Filter {
 
 
         //토큰: cos
-        if (req.getMethod().equals("POST")){
+        if (req.getRequestURL().equals("/api/login")){
             System.out.println("포스트요청됨");
             String headerAuth = req.getHeader("Authorization");
             System.out.println(headerAuth);
