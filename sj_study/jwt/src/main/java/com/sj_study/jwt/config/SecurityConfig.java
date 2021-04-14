@@ -2,7 +2,6 @@ package com.sj_study.jwt.config;
 
 import com.sj_study.jwt.config.jwt.JwtAuthenticationFilter;
 import com.sj_study.jwt.config.jwt.JwtAuthorizationFilter;
-import com.sj_study.jwt.filter.MyFilter1;
 import com.sj_study.jwt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -33,18 +32,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     // http.addFilterBefore(new MyFilter1(), SecurityContextPersistenceFilter.class);
+        http.headers().frameOptions().sameOrigin();
         http
-                .addFilter(corsConfig.corsFilter())
+                .addFilter(corsConfig.corsFilter()) // Cors필터링
+                // @CrossOrigin => 인증이 필요 없는 경우 사용 // 인증이 필요한 경우에는 시큐리티에 등록 해줘야한다.
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-                .formLogin().disable()
+                .formLogin().disable() // 이녀석 때문에 별도의 로그인 시도를 캐치해줄 필터가 필요
                 .httpBasic().disable()
-
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                // AuthenticationManager 이녀석은 로그인 매니져라고 생각하면 되며, JwtAuthenticationFilter 이녀석이 로그인 수행 필터이기 때문에
+                // 매니저와 함께 해야 하므로 JwtAuthenticationFilter를 던져주면 된다.
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
+                // JwtAuthorizationFilter 로그인 할 당시 클라이언트에게 준 토큰을 이용해 이후 요청이 들어오면 토큰이 유효한
+                // 토큰인지를 검사해서 토큰에 해당하는 유저정보를 검색해준다. 유저 정보에 접근하기 위해 userRepository를 실어준다
                 .authorizeRequests()
-                .anyRequest().permitAll();
+                // image 폴더를 login 없이 허용
+                .antMatchers("/images/**").permitAll()
+                // css 폴더를 login 없이 허용
+                .antMatchers("/css/**").permitAll()
+                // css 폴더를 login 없이 허용
+                .antMatchers("/js/**").permitAll()
+                .antMatchers("/api/**").permitAll()
+                //H2 콘솔 허용
+                .antMatchers("/h2-console/**").permitAll()
+                .anyRequest().authenticated();
 
     }
 }
